@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow">Legal</p>
+    <h1>Privacy Policy</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container stack" style="max-width:44rem">
+    <p class="lede">This policy explains what information {{ company.name }} collects through this
+       website and how it is used.</p>
+
+    {# L-4: CalOPPA requires this page to exist and be conspicuously linked once
+       the form collects personal information. Client confirmed a policy is in
+       place (Bryan, 2026-08-26); swap in their exact wording when handy. #}
+
+    <h2>What we collect</h2>
+    <p>When you submit the contact form we collect the name, business, email address,
+       phone number and message you provide, so we can respond to your enquiry.</p>
+
+    <h2>How we use it</h2>
+    <p>We use your information only to respond to you and to provide the services you ask about.
+       We do not sell it, and we do not share it except as needed to reply to you.</p>
+
+    <h2>Analytics</h2>
+    <p>This site may use analytics to understand how visitors use it. Analytics data is
+       aggregated and is not used to identify you personally.</p>
+
+    <h2>Retention</h2>
+    <p>We keep enquiry information for as long as needed to serve you and to keep our
+       business records, then dispose of it.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy, or requests about your information, can be directed to
+       {{ company.name }} at
+       {% if company.email %}<a href="mailto:{{ company.email }}">{{ company.email }}</a> or{% endif %}
+       <a href="tel:{{ company.phone_href }}">{{ company.phone_display }}</a>,
+       {{ company.address.street }}, {{ company.address.city }}, {{ company.address.region }}
+       {{ company.address.postal_code }}.</p>
+  </div>
+</section>
+
+{% endblock %}

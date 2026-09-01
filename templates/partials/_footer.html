@@ -1,0 +1,68 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+
+      <div>
+        <img class="site-footer__logo"
+             src="{{ url_for('static', filename='img/logo/washworks-logo-white.png') }}"
+             alt="{{ company.name }}" width="176" height="103">
+        <p>{{ company.address.street }}<br>
+           {{ company.address.city }}, {{ company.address.region }} {{ company.address.postal_code }}</p>
+        <p style="margin-top:var(--s-4)">
+          <a href="tel:{{ company.phone_href }}">{{ company.phone_display }}</a>
+          {% if company.email %}<br><a href="mailto:{{ company.email }}">{{ company.email }}</a>{% endif %}
+        </p>
+      </div>
+
+      <div>
+        <h2>Services</h2>
+        <ul>
+          {% for service in featured_services %}
+            <li><a href="{{ url_for('service_detail', slug=service.slug) }}">{{ service.name }}</a></li>
+          {% endfor %}
+          <li><a href="{{ url_for('services') }}">All services</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Company</h2>
+        <ul>
+          <li><a href="{{ url_for('motor_control_centers') }}">Motor Control Centers</a></li>
+          <li><a href="{{ url_for('consulting') }}">Consulting</a></li>
+          <li><a href="{{ url_for('marketing') }}">Marketing Services</a></li>
+          <li><a href="{{ url_for('about') }}">About</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Get in touch</h2>
+        <p style="color:rgba(255,255,255,.8)">Call for service, equipment or a panel quote.</p>
+        <p style="margin-top:var(--s-4)">
+          <a class="btn btn--primary" href="tel:{{ company.phone_href }}">Call {{ company.phone_display }}</a>
+        </p>
+      </div>
+
+    </div>
+
+    <div class="site-footer__legal">
+      <span>
+        &copy; {{ current_year }} {{ company.name }}.
+        {% set creds = [] %}
+        {% if company.licensed %}{% set _ = creds.append("CSLB Lic. #" ~ company.license_number if company.license_number else "Licensed") %}{% endif %}
+        {% if company.bonded %}{% set _ = creds.append("Bonded") %}{% endif %}
+        {% if company.insured %}{% set _ = creds.append("Insured") %}{% endif %}
+        {% if company.ul508a_listed %}{% set _ = creds.append("UL508A Listed") %}{% endif %}
+        {% if creds %}{{ creds | join(" &middot; ") | safe }}.{% endif %}
+      </span>
+      <span>
+        <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+      </span>
+    </div>
+
+    {# L-1: "Licensed" shows now (the licence is confirmed to exist); the CSLB
+       number replaces the word automatically once it is in site.json. B&P 7030.5
+       requires the number in public advertising - land it before the public
+       (indexed) launch. app.py logs a warning if the public instance lacks it. #}
+  </div>
+</footer>

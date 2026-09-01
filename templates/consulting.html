@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow">Consulting</p>
+    <h1>Know the numbers before you build.</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">
+      Buying a wash, building one, or trying to understand why yours underperforms &mdash;
+      we have run the equipment and the math on both.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--3">
+      {% for item in site.consulting %}
+        <div class="card">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.summary }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    <p style="margin-top:var(--s-12)">
+      <a class="btn btn--primary" href="{{ url_for('contact') }}">Start a conversation</a>
+    </p>
+  </div>
+</section>
+
+{% endblock %}

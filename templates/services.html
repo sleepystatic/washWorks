@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow">Services</p>
+    <h1>Car wash maintenance, installation &amp; repair</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">
+      One team for the whole site &mdash; tunnel, conveyor, electrical, water and vacuums.
+      Keep it running, fix it when it breaks, and upgrade it when it is time.</p>
+  </div>
+</section>
+
+{% include "partials/_trust.html" %}
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Featured</p>
+      <h2>Where most jobs start</h2>
+    </div>
+    <div class="grid grid--3">
+      {% for service in featured_services %}
+        <a class="card" href="{{ url_for('service_detail', slug=service.slug) }}">
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.summary }}</p>
+          <span class="card__link">Learn more &rarr;</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section band-surface">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Also available</p>
+      <h2>The rest of the shop</h2>
+    </div>
+    <ul class="list-plain" style="max-width:44rem">
+      {% for service in site.services if not service.featured %}
+        <li><strong>{{ service.name }}</strong> &mdash; {{ service.summary }}</li>
+      {% endfor %}
+    </ul>
+    <p style="margin-top:var(--s-8)">
+      <a class="btn btn--primary" href="{{ url_for('contact') }}">Request service</a>
+    </p>
+  </div>
+</section>
+
+{% endblock %}

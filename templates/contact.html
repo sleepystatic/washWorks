@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow">Contact</p>
+    <h1>Let&rsquo;s talk about your wash.</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">
+      Service, equipment, or a control panel quote &mdash; call us or send a message and
+      we will get back to you.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid grid--2" style="align-items:start;gap:var(--s-16)">
+
+    <div class="stack">
+      <h2>Reach us</h2>
+      <dl class="contact-details" style="margin-top:var(--s-6)">
+        <div>
+          <dt>Phone</dt>
+          <dd><a href="tel:{{ company.phone_href }}">{{ company.phone_display }}</a></dd>
+        </div>
+        {% if company.email %}
+        <div>
+          <dt>Email</dt>
+          <dd><a href="mailto:{{ company.email }}">{{ company.email }}</a></dd>
+        </div>
+        {% endif %}
+        <div>
+          <dt>Address</dt>
+          <dd>{{ company.address.street }}<br>
+              {{ company.address.city }}, {{ company.address.region }} {{ company.address.postal_code }}</dd>
+        </div>
+        {% if company.hours %}
+        <div>
+          <dt>Hours</dt>
+          <dd>{{ company.hours }}</dd>
+        </div>
+        {% endif %}
+      </dl>
+
+    </div>
+
+    <div>
+      <h2>Send a message</h2>
+      <form class="form" id="contact-form" action="{{ url_for('contact_submit') }}" method="post" novalidate
+            style="margin-top:var(--s-6)">
+
+        {# T-6: honeypot. Real users never see or fill this. #}
+        <div class="honeypot" aria-hidden="true">
+          <label for="company_website">Company website</label>
+          <input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="hidden" name="rendered_at" id="rendered_at" value="">
+
+        <div class="field">
+          <label for="name">Name <span aria-hidden="true">*</span></label>
+          <input type="text" id="name" name="name" autocomplete="name" required aria-required="true">
+          <p class="field__error" data-error-for="name" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="business">Business</label>
+          <input type="text" id="business" name="business" autocomplete="organization">
+        </div>
+
+        <div class="field">
+          <label for="email">Email <span aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" autocomplete="email" required aria-required="true">
+          <p class="field__error" data-error-for="email" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel">
+        </div>
+
+        <div class="field">
+          <label for="subject">What do you need?</label>
+          <select id="subject" name="subject">
+            <option value="Service or repair">Service or repair</option>
+            <option value="Equipment or parts">Equipment or parts</option>
+            <option value="Motor control panel">Motor control panel quote</option>
+            <option value="Consulting">Consulting</option>
+            <option value="Marketing services">Marketing services</option>
+            <option value="Something else">Something else</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message <span aria-hidden="true">*</span></label>
+          <textarea id="message" name="message" required aria-required="true"
+                    placeholder="Tell us what your wash is doing, or what you need a quote for."></textarea>
+          <p class="field__error" data-error-for="message" hidden></p>
+        </div>
+
+        <div class="form-status" id="form-status" role="status" aria-live="polite" hidden></div>
+
+        <button type="submit" class="btn btn--primary">Send message</button>
+        <p class="field .hint" style="font-size:var(--text-xs);color:var(--ink-3)">
+          By sending this you agree to our <a href="{{ url_for('privacy') }}">privacy policy</a>.</p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

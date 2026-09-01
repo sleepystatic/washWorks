@@ -1,0 +1,19 @@
+{# Credentials strip. Every item is confirmed true (L-1 licence exists,
+   L-2 UL508A listed, L-6 bonded & insured). The CSLB number renders inline the
+   moment it is added to site.json; until then "Licensed" stands alone, which is
+   fine on the noindex staging URL but must carry the number once the site is
+   public advertising (B&P 7030.5 - app.py warns on the public instance). #}
+{% set items = [] %}
+{% if company.licensed %}
+  {% set _ = items.append("Licensed #" ~ company.license_number if company.license_number else "Licensed") %}
+{% endif %}
+{% if company.bonded %}{% set _ = items.append("Bonded") %}{% endif %}
+{% if company.insured %}{% set _ = items.append("Insured") %}{% endif %}
+{% if company.ul508a_listed %}{% set _ = items.append("UL508A Listed") %}{% endif %}
+{% if items %}
+<aside class="trust-bar" aria-label="Credentials">
+  <ul class="trust-bar__list">
+    {% for item in items %}<li>{{ item }}</li>{% endfor %}
+  </ul>
+</aside>
+{% endif %}

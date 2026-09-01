@@ -1,0 +1,180 @@
+{
+  "_readme": "Editable site content. Anything with a null value is an unanswered discovery item and is hidden by the templates until it is filled in. Edit this file, save, redeploy. Do not remove keys - set them to null instead.",
+
+  "company": {
+    "name": "Wash Works Inc.",
+    "tagline": "Car Wash Services",
+    "phone_display": "(209) 263-7086",
+    "phone_href": "+12092637086",
+    "email": null,
+    "_email_note": "C-7 BLOCKING: flyer addresses use the dead washworkscw.com domain. Confirm the current washworkscws.com addresses before launch. Do not reuse bill@washworkscw.com or mike@washworkscw.com.",
+    "address": {
+      "street": "502 North School Street",
+      "city": "Lodi",
+      "region": "CA",
+      "postal_code": "95240",
+      "country": "US"
+    },
+    "geo": null,
+    "licensed": true,
+    "license_number": null,
+    "_license_note": "L-1: CSLB licence CONFIRMED to exist (Bryan 2026-08-26); number pending access. B&P 7030.5 requires the number in public advertising - app.py warns if the PUBLIC instance (NOINDEX=0) is missing it. Fine to demo on the noindex staging URL meanwhile. Drop the number into license_number and it appears automatically.",
+    "license_class": null,
+    "bonded": true,
+    "insured": true,
+    "_bonded_note": "L-6 RESOLVED (Bryan 2026-08-26): bonded and insured, willing to state it.",
+    "ul508a_listed": true,
+    "ul_mark_authorized": true,
+    "ul_file_number": null,
+    "_ul_note": "L-2 RESOLVED (Bryan 2026-08-26): UL508A verified and LISTED, authorised to display the mark. File number optional - add it here as an extra trust signal when handy.",
+    "founded": null,
+    "hours": null,
+    "_hours_note": "C-8: needed for the Contact page and the LocalBusiness schema.",
+    "emergency": {
+      "available": null,
+      "phone_display": null,
+      "response_time": null,
+      "_note": "C-1 BLOCKING: response time is the buying decision in this trade. If they run after-hours service this leads the home page hero."
+    },
+    "service_area": [],
+    "_service_area_note": "C-2 BLOCKING: drives areaServed schema and any future city pages. Ask for the 8-12 cities that matter most.",
+    "social": {}
+  },
+
+  "analytics": {
+    "ga4_id": null,
+    "_note": "T-7: paste the GA4 Measurement ID (G-XXXXXXXXXX) here to switch on analytics. When set, the site loads gtag and fires a 'phone_call' event on every tel: click and a 'generate_lead' event on a successful contact submit - mark those two as conversions in GA4. Left off until you create the property."
+  },
+
+  "promo": {
+    "active": false,
+    "headline": null,
+    "detail": null,
+    "_note": "C-8: the flyer's $99 service rate expired May 1st. Left inactive deliberately - set active to true only once the client confirms current pricing."
+  },
+
+  "services": [
+    {
+      "slug": "monthly-maintenance",
+      "name": "Monthly Maintenance Plan",
+      "featured": true,
+      "summary": "Scheduled preventive maintenance that catches wear before it becomes downtime.",
+      "body": "<p>A wash that gets looked at on a schedule breaks down less often, and when it does break, it breaks smaller. Our Monthly Maintenance Plan puts your equipment on a regular service interval &mdash; brushes, bearings, belts, chemical systems and the wear points that quietly drift out of spec between problems.</p><p>Each visit we inspect, adjust and document what we find, so you get a clear picture of what is holding up, what is coming due, and what to budget for. The goal is simple: fewer surprise closures, longer equipment life, and a wash that stays consistent from the first car of the day to the last.</p><p>Plans are built around your site and your equipment. Call us and we will put together a schedule that fits your tunnel.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Honest and non-specific - safe to show the client. Refine once C-4 answers land."
+    },
+    {
+      "slug": "tunnel-adjustments",
+      "name": "Tunnel Adjustments",
+      "featured": true,
+      "summary": "Dial in brush pressure, timing and chemical application for a consistent wash.",
+      "body": "<p>A tunnel that is even slightly out of adjustment shows up in the finish &mdash; missed spots, uneven coverage, and chemistry that costs more than it should. We dial in the parts of the wash that drift over time: brush pressure and timing, applicator arches, chemical dosing, and the sequence cars move through.</p><p>The result is a cleaner, more consistent wash on less chemical and less wear. Whether you have noticed a drop in quality, added a new wash package, or simply have not had the tunnel tuned in a while, we will get it running the way it should.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Refine once C-4 answers land."
+    },
+    {
+      "slug": "conveyor-installation-repair",
+      "name": "Conveyor Installation & Repairs",
+      "featured": true,
+      "summary": "Chain, roller and correlator work, from single repairs to full conveyor replacement.",
+      "body": "<p>The conveyor is the one part of the wash that simply has to work &mdash; when it stops, the whole tunnel stops and the cars stop with it. We install, repair and rebuild conveyor systems end to end: chain, rollers, correlators, the take-up and the drive.</p><p>Whether you need a worn section brought back into spec, a failing component replaced, or a complete conveyor installed in a new or rebuilt tunnel, we handle it. And we will tell you honestly whether a repair or a replacement is the better call for where your equipment is in its life &mdash; because the cheapest fix today is not always the cheapest fix this year.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Refine once C-4 answers land."
+    },
+    {
+      "slug": "electrical-installation-repair",
+      "name": "Electrical Installation & Repairs",
+      "featured": true,
+      "summary": "Power distribution, motor circuits and controls for tunnel and bay equipment.",
+      "body": "<p>Everything in the wash runs on the electrical system, and it is the one area where cutting corners is dangerous as well as expensive. We handle power distribution, motor circuits, controls and troubleshooting for tunnel and bay equipment &mdash; new installations, upgrades and repairs.</p><p>When something is tripping, failing intermittently, or simply wired in a way nobody can make sense of anymore, we diagnose it and fix it properly. For control panels specifically, we build our own <a href=\"/motor-control-centers/\">UL508A Listed Motor Control Centers</a> designed for car wash equipment.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Refine once C-4 answers land. Internal link to MCC intentional."
+    },
+    {
+      "slug": "vacuum-installation-repair",
+      "name": "Vacuum Installation & Repairs",
+      "featured": true,
+      "summary": "Central vacuum systems, producers and drops, installed and kept running.",
+      "body": "<p>Vacuums are a profit center that customers notice the moment they stop pulling. We install and service central vacuum systems and self-serve vacuum equipment &mdash; producers, motors, drops, hoses and the plumbing that ties them together.</p><p>Whether you are adding stalls, replacing a tired system, or chasing down a loss of suction, we will get your vacuums back to full pull and keep them there.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Refine once C-4 answers land."
+    },
+    {
+      "slug": "equipment-sales",
+      "name": "Equipment Sales",
+      "featured": true,
+      "summary": "New and replacement car wash equipment, quoted to your site and throughput.",
+      "body": "<p>Buying car wash equipment is a big decision, and the right choice depends on your site, your volume and your budget &mdash; not on whatever a catalog is pushing this quarter. We help you spec and source equipment that fits, and we quote it to your actual application.</p><p>Because we also install and service what we sell, we have a stake in recommending equipment that holds up. Tell us what you are trying to do and we will put together a quote.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Quote-request only for v1 (C-3) - no catalogue, no checkout.",
+      "_note": "C-3: scoped as quote-request only for v1. No catalogue, no checkout."
+    },
+    {
+      "slug": "reclaim-and-ro",
+      "name": "Reclaim & RO Service",
+      "featured": true,
+      "summary": "Water reclaim systems and reverse osmosis units serviced, repaired and rebuilt.",
+      "body": "<p>Water is one of the largest recurring costs in a wash, and reclaim and reverse-osmosis systems are how you control it &mdash; when they are working. We service, repair and rebuild both.</p><p>Reclaim systems recover and recycle wash water so you buy and heat less of it. RO units produce the spot-free water customers expect on the final rinse. When your water quality slips or your usage climbs, it usually traces back to one of these, and we will get it sorted.</p>",
+      "_body_note": "INTERIM copy (Claude, 2026-08-26). Refine once C-4 answers land.",
+      "_note": "Merges the flyer's separate 'Reclaim Service' and 'RO Repair' lines - both are water treatment. Split them if the client prefers."
+    },
+
+    { "slug": "compressor-maintenance", "name": "Compressor Maintenance", "featured": false, "summary": "Air system service and repair.", "body": null },
+    { "slug": "security-video", "name": "Security Video Systems", "featured": false, "summary": "Camera systems for bays, tunnels and pay stations.", "body": null },
+    { "slug": "parts", "name": "Parts", "featured": false, "summary": "Replacement parts for common car wash equipment.", "body": null },
+    { "slug": "custom-ladder-rack", "name": "Custom Ladder Rack", "featured": false, "summary": "Built to fit your vehicle and your gear.", "body": null },
+    { "slug": "chemical-service", "name": "Chemical Service", "featured": false, "summary": "Chemical supply, dosing and delivery.", "body": null },
+    { "slug": "custom-manufacturing", "name": "Custom Manufacturing", "featured": false, "summary": "Fabrication for equipment that is no longer supported or never existed.", "body": null }
+  ],
+
+  "_services_note": "C-4: 'featured' controls which services get their own page. My picks are provisional - flip the flag once the client says which services actually drive revenue. Every featured service needs 250-400 words in 'body' before it ranks for anything; until 'body' is filled the page shows the summary and a quote CTA.",
+
+  "consulting": [
+    { "name": "Financial Information", "summary": "Cost modelling and operating figures for a wash you own or are considering." },
+    { "name": "Equipment Recommendations", "summary": "What to buy for your site, volume and budget - and what to avoid." },
+    { "name": "Repair Diagnostics", "summary": "Independent diagnosis when equipment is failing and nobody can say why." },
+    { "name": "Wash Packages", "summary": "Package structure and pricing that customers actually buy." },
+    { "name": "Traffic Counts", "summary": "Real vehicle counts for a prospective site." },
+    { "name": "Proforma", "summary": "Projected revenue and cost modelling for financing or planning." },
+    { "name": "Site Inspections", "summary": "On-site assessment of condition, throughput and risk." },
+    { "name": "Signs / Marketing", "summary": "Signage and promotion that brings cars into the tunnel." },
+    { "name": "Land for Sale", "summary": "Site sourcing for operators looking to build." }
+  ],
+
+  "marketing": {
+    "intro": "No spare time? Let us manage your social media accounts, websites and promotions.",
+    "channels": ["Facebook", "Instagram", "TikTok", "LinkedIn", "X"],
+    "services": [
+      { "name": "Social Media Management", "summary": "Day-to-day posting and account management across the platforms your customers use." },
+      { "name": "Website Design", "summary": "Sites built for car wash operators, by people who know the business." }
+    ],
+    "_note": "C-9: only credible if the client's own accounts are active. Confirm before linking anything."
+  },
+
+  "mcc": {
+    "name": "Motor Control Centers",
+    "byline": "by Wash Works",
+    "headline": "UL508A motor control panels, built for car wash equipment.",
+    "intro": "Control panels for tunnel equipment, dryers, central vacuums and lighting - built for maximum efficiency and suited to every car wash application, with an emphasis on quality and safety.",
+    "advantages": [
+      { "name": "Competitive Pricing", "detail": "Priced against the national panel builders, built to the same standard." },
+      { "name": "Maximum Reliability", "detail": "Designed to run in a wet, high-cycle environment." },
+      { "name": "Built for Car Wash Equipment", "detail": "Not a general-purpose panel adapted after the fact." },
+      { "name": "Custom Lighting Panels", "detail": "Lighting control designed alongside the wash equipment." },
+      { "name": "Quality Components", "detail": "Specified for service life, not lowest bill of materials." }
+    ],
+    "cta": "Call today for a quote",
+    "quote_fields": null,
+    "_quote_note": "C-10: ask what they actually need in order to quote - incoming voltage and phase, tunnel length, motor list and horsepower, existing panel make, enclosure rating, lighting control. A spec form beats a generic contact box."
+  },
+
+  "about": {
+    "body": "<p>Wash Works Inc. is a car wash service and equipment company based in Lodi, California. We keep car washes running &mdash; maintenance, installation and repair across the whole site, from the conveyor and tunnel equipment to the electrical, water systems and vacuums.</p><p>We build <a href=\"/motor-control-centers/\">UL508A Listed motor control panels</a> under our Motor Control Centers line, sell and source equipment, and advise operators on everything from equipment selection to site decisions. We are also a sister company to New Wave Innovations Inc., a car wash parts manufacturer at the same Lodi address.</p><p>Whether you run a single wash or several, we are a single point of contact for keeping them clean, running and profitable.</p>",
+    "_body_note": "INTERIM copy (Claude, 2026-08-26). Deliberately capability-focused - no invented founding year, names or headcount. Replace with the real story once C-5 answers land (founder, Bill and Mike's titles, years in the trade, why the company started).",
+    "_note": "C-5: still want the real founding story - founding year and founder, who Bill and Mike are and their titles, headcount, combined years in the trade, why the company was started, and how they want the New Wave relationship described."
+  },
+
+  "testimonials": [],
+  "_testimonials_note": "C-6: none supplied. For a B2B vendor asking to be trusted with a tunnel this is the most persuasive content available, and it costs a few phone calls.",
+
+  "related_company": {
+    "name": "New Wave Innovations Inc.",
+    "relationship": "Sister company - car wash parts manufacturer, same address.",
+    "url": null,
+    "_note": "S-3: shared address at 502 N School St. Distinct Google Business Profile categories and ideally distinct phone numbers, or the two listings interfere."
+  }
+}

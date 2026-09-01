@@ -1,0 +1,53 @@
+# --- Python ---------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Virtual envs ----------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+
+# --- Secrets & environment -------------------------------------------------
+# Never commit real credentials. .env.example IS committed as the template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# --- Runtime data ----------------------------------------------------------
+# Contact-form submissions land here at runtime (T-5). Not source; and it can
+# contain personal information, so it must never reach the repo.
+data/submissions.jsonl
+data/*.jsonl
+data/*.db
+data/*.sqlite3
+
+# --- Editors & OS ----------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ------------------------------------------------------------------
+*.log
+logs/
+
+# --- Build artefacts we generate but can regenerate ------------------------
+# Logo/favicon set is rebuildable from brand-source via tools/build_assets.py,
+# but it IS committed (deploy has no build step for it). Nothing to ignore here
+# by default - listed as a reminder of where those live.

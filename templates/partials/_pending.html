@@ -1,0 +1,5 @@
+{# Renders a visible placeholder for an unanswered discovery item. Usage:
+   {% set ref = "C-1" %}{% set need = "emergency response details" %}
+   {% include "partials/_pending.html" %}
+   Deliberately conspicuous so it cannot ship unnoticed. #}
+<p class="pending"><code>{{ ref }}</code> Pending client input: {{ need }}.</p>

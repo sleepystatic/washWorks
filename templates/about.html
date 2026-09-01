@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow">About</p>
+    <h1>{{ company.name }}</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">
+      Car wash service, equipment and control panels from {{ company.address.city }},
+      {{ company.address.region }}.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container stack" style="max-width:44rem">
+    {% if site.about.body %}
+      {{ site.about.body | safe }}
+    {% endif %}
+
+    {% if site.related_company.url %}
+      <p>Sister company: <a href="{{ site.related_company.url }}">{{ site.related_company.name }}</a> &mdash;
+         {{ site.related_company.relationship }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

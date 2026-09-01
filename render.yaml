@@ -1,0 +1,30 @@
+# Render blueprint. Valid YAML this time, and authoritative - the env keys here
+# match what app.py actually reads. Secrets are set in the Render dashboard, not
+# committed (sync: false).
+services:
+  - type: web
+    name: wash-works
+    runtime: python
+    plan: starter          # T-1: NOT free. The free tier sleeps after 15 min idle
+                           # and wakes in ~50s, so the first buyer of the day waits.
+    buildCommand: pip install -r requirements.txt
+    # Render injects $PORT; gunicorn must bind it or the health check never passes.
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60
+    healthCheckPath: /
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MAILJET_API_KEY
+        sync: false
+      - key: MAILJET_SECRET_KEY
+        sync: false
+      - key: CONTACT_FROM
+        sync: false
+      - key: CONTACT_TO
+        sync: false
+      - key: CANONICAL_HOST
+        value: washworkscws.com
+      - key: LEGACY_HOSTS
+        sync: false
+      - key: NOINDEX
+        value: "0"        # set to "1" on the staging service (O-1)

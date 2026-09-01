@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow">Marketing Services</p>
+    <h1>{{ site.marketing.intro }}</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">
+      We run this for our own customers &mdash; the wash operators we already serve &mdash;
+      so the marketing is built by people who understand the business, not just the platform.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid--2">
+      {% for item in site.marketing.services %}
+        <div class="card">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.summary }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div style="margin-top:var(--s-12)">
+      <p class="eyebrow">Platforms we manage</p>
+      <ul class="btn-row" style="margin-top:var(--s-4)">
+        {% for channel in site.marketing.channels %}
+          <li class="card" style="padding:var(--s-3) var(--s-6);font-weight:600;font-size:var(--text-sm)">{{ channel }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <p style="margin-top:var(--s-12)">
+      <a class="btn btn--primary" href="{{ url_for('contact') }}">Ask about marketing</a>
+    </p>
+  </div>
+</section>
+
+{% endblock %}

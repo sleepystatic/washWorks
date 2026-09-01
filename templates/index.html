@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="container">
+    <p class="eyebrow">Car wash service &amp; equipment &middot; {{ company.address.city }}, {{ company.address.region }}</p>
+    <h1>Your wash, running and earning.</h1>
+    <p class="hero__lede">Maintenance, installation and repair for every part of the tunnel &mdash;
+      plus UL508A motor control panels built for car wash equipment. One team for the
+      wash, the water and the wiring.</p>
+
+    <div class="btn-row">
+      <a class="btn btn--primary" href="{{ url_for('contact') }}">Request service</a>
+      <a class="btn btn--ghost-light" href="{{ url_for('services') }}">See what we do</a>
+    </div>
+
+    {% if company.emergency.available %}
+      <a class="hero__phone" href="tel:{{ company.emergency.phone_href or company.phone_href }}">
+        <span class="label">Equipment down? Call now</span>
+        <span class="number">{{ company.emergency.phone_display or company.phone_display }}</span>
+      </a>
+    {% else %}
+      <a class="hero__phone" href="tel:{{ company.phone_href }}">
+        <span class="label">Call us</span>
+        <span class="number">{{ company.phone_display }}</span>
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+{% include "partials/_trust.html" %}
+
+{% if site.promo.active %}
+  <section class="section--tight band-surface">
+    <div class="container">
+      <p class="eyebrow">Current offer</p>
+      <h2>{{ site.promo.headline }}</h2>
+      <p class="lede">{{ site.promo.detail }}</p>
+    </div>
+  </section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">What we do</p>
+      <h2>Service for the whole wash</h2>
+    </div>
+    <div class="grid grid--3">
+      {% for service in featured_services %}
+        <a class="card" href="{{ url_for('service_detail', slug=service.slug) }}">
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.summary }}</p>
+          <span class="card__link">Learn more &rarr;</span>
+        </a>
+      {% endfor %}
+    </div>
+    <p style="margin-top:var(--s-8)"><a class="btn btn--outline" href="{{ url_for('services') }}">All services</a></p>
+  </div>
+</section>
+
+<section class="section mcc">
+  <div class="container">
+    <img class="mcc__lockup"
+         src="{{ url_for('static', filename='img/logo/washworks-logo-white.png') }}"
+         alt="" width="352" height="205" aria-hidden="true">
+    <p class="eyebrow">Motor Control Centers by Wash Works</p>
+    <h2>{{ site.mcc.headline }}</h2>
+    <p class="lede" style="color:rgba(255,255,255,.85)">{{ site.mcc.intro }}</p>
+    <div class="btn-row" style="margin-top:var(--s-8)">
+      <a class="btn btn--primary" href="{{ url_for('motor_control_centers') }}">Explore the panels</a>
+    </div>
+  </div>
+</section>
+
+<section class="section band-surface">
+  <div class="container">
+    <div class="grid grid--2">
+      <div class="stack">
+        <p class="eyebrow">Beyond the wrench</p>
+        <h2>Consulting &amp; marketing, too</h2>
+        <p>We help operators buy the right equipment, model the numbers before they build,
+           and keep their own customers coming back &mdash; from proformas and traffic counts
+           to social media and websites.</p>
+        <div class="btn-row">
+          <a class="btn btn--outline" href="{{ url_for('consulting') }}">Consulting</a>
+          <a class="btn btn--outline" href="{{ url_for('marketing') }}">Marketing services</a>
+        </div>
+      </div>
+      <div class="stack">
+        <p class="eyebrow">Talk to us</p>
+        <h2>Tell us what your wash needs.</h2>
+        <p>Service call, an equipment quote, or a control panel for a new build &mdash;
+           start with a call or a message.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="tel:{{ company.phone_href }}">{{ company.phone_display }}</a>
+          <a class="btn btn--solid" href="{{ url_for('contact') }}">Contact us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

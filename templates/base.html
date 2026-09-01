@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{% if page_title %}{{ page_title }} | {{ company.name }}{% else %}{{ company.name }} | Car Wash Maintenance, Installation &amp; Repair{% endif %}</title>
+<meta name="description" content="{{ meta_description }}">
+<link rel="canonical" href="{{ canonical_url }}">
+
+{# A-5: self-hosting these as subset woff2 is the action item. Google Fonts is
+   the scaffold default so the type is right from day one. #}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<link rel="icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32.png') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
+<meta name="theme-color" content="#003274">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ company.name }}">
+<meta property="og:title" content="{% if page_title %}{{ page_title }} | {{ company.name }}{% else %}{{ company.name }}{% endif %}">
+<meta property="og:description" content="{{ meta_description }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:image" content="{{ url_for('static', filename='favicon/icon-512.png', _external=True) }}">
+<meta name="twitter:card" content="summary">
+
+{# S-4: LocalBusiness, assembled in app.py. Fields that are still unanswered are
+   omitted rather than guessed - invented hours or a made-up service area are
+   worse than absent. #}
+<script type="application/ld+json">{{ business_schema | tojson }}</script>
+
+{% block head_extra %}{% endblock %}
+
+{# T-7: analytics. Loads only when a GA4 Measurement ID is set in
+   content/site.json (site.analytics.ga4_id). main.js then fires a 'phone_call'
+   event on tel: clicks and 'generate_lead' on a successful contact submit -
+   mark both as conversions in GA4, because the phone is the primary CTA and GA4
+   will not report taps on it otherwise. #}
+{% if site.analytics and site.analytics.ga4_id %}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ site.analytics.ga4_id }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', '{{ site.analytics.ga4_id }}');
+</script>
+{% endif %}
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+{% include "partials/_header.html" %}
+
+<main id="main">
+  {% block content %}{% endblock %}
+</main>
+
+{% include "partials/_footer.html" %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+{% block body_extra %}{% endblock %}
+</body>
+</html>

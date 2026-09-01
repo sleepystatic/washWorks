@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<script type="application/ld+json">{{ {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": service.name,
+  "description": service.summary,
+  "provider": {"@type": "LocalBusiness", "name": company.name},
+  "areaServed": company.service_area or None
+} | tojson }}</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="section band-navy">
+  <div class="container">
+    <p class="eyebrow"><a href="{{ url_for('services') }}" style="color:rgba(255,255,255,.72)">Services</a></p>
+    <h1>{{ service.name }}</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">{{ service.summary }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container grid grid--2" style="align-items:start">
+    <div class="stack">
+      {% if service.body %}
+        {{ service.body | safe }}
+      {% else %}
+        <p class="lede">{{ service.summary }}</p>
+        <p>Call us and we will walk through exactly what your wash needs.</p>
+      {% endif %}
+    </div>
+
+    <aside class="card" style="position:sticky;top:6rem">
+      <h3>Need this now?</h3>
+      <p>Call and describe what your wash is doing. We will tell you what it takes to fix it.</p>
+      <div class="btn-row" style="margin-top:var(--s-4)">
+        <a class="btn btn--primary" href="tel:{{ company.phone_href }}">{{ company.phone_display }}</a>
+      </div>
+      <p style="margin-top:var(--s-4)"><a class="card__link" href="{{ url_for('contact') }}">Or send a message &rarr;</a></p>
+    </aside>
+  </div>
+</section>
+
+{% endblock %}

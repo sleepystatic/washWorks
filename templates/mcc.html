@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<script type="application/ld+json">{{ {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "UL508A Motor Control Panels",
+  "description": site.mcc.intro,
+  "brand": {"@type": "Brand", "name": "Motor Control Centers by Wash Works"},
+  "manufacturer": {"@type": "Organization", "name": company.name}
+} | tojson }}</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="section mcc">
+  <div class="container">
+    <img class="mcc__lockup"
+         src="{{ url_for('static', filename='img/logo/washworks-logo-white.png') }}"
+         alt="Motor Control Centers by Wash Works" width="352" height="205">
+    {# L-2 resolved: shop is UL508A LISTED and authorised to display the mark, so
+       "Listed" is the accurate term (not "Certified"). File number optional. #}
+    <p class="eyebrow">UL508A Listed Panels{% if company.ul_file_number %} &middot; File #{{ company.ul_file_number }}{% endif %}</p>
+    <h1>{{ site.mcc.headline }}</h1>
+    <p class="lede" style="color:rgba(255,255,255,.85);margin-top:var(--s-6)">{{ site.mcc.intro }}</p>
+    <div class="btn-row" style="margin-top:var(--s-8)">
+      <a class="btn btn--primary" href="tel:{{ company.phone_href }}">{{ site.mcc.cta }} &mdash; {{ company.phone_display }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section mcc" style="background:var(--navy-700);background-image:none">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Why these panels</p>
+      <h2>Built for the environment they run in</h2>
+    </div>
+    <div class="spec-grid">
+      {% for adv in site.mcc.advantages %}
+        <div>
+          <h3>{{ adv.name }}</h3>
+          <p>{{ adv.detail }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section mcc" style="background:var(--navy-800);background-image:none">
+  <div class="container">
+    <div class="grid grid--2" style="align-items:center">
+      <div class="stack">
+        <p class="eyebrow">Get a quote</p>
+        <h2>Tell us about the wash.</h2>
+        <p>Have the basics ready and we can turn a quote around quickly:
+           incoming voltage and phase, tunnel length, the motor list, and any
+           lighting control you need.</p>
+      </div>
+      <div>
+        {# C-10 (open): upgrade these CTAs to a real panel-spec form once the
+           client confirms the fields they quote from. Phone + contact works now. #}
+        <div class="btn-row" style="margin-top:var(--s-6)">
+          <a class="btn btn--primary" href="tel:{{ company.phone_href }}">Call {{ company.phone_display }}</a>
+          <a class="btn btn--ghost-light" href="{{ url_for('contact') }}">Send specs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
