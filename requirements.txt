@@ -1,4 +1,5 @@
+# Email notifications go over SMTP via the standard library (smtplib), so there
+# is no mail-provider SDK to pin here. Swapping SMTP providers is a .env change.
 Flask==3.0.3
 gunicorn==22.0.0
 python-dotenv==1.0.1
-mailjet-rest==1.3.4

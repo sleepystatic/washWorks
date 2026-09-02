@@ -14,11 +14,20 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true
-      - key: MAILJET_API_KEY
+      # SMTP (Mailgun) — set the secret values in the dashboard, never in git.
+      - key: MAIL_SERVER
+        value: smtp.mailgun.org
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "true"
+      - key: MAIL_USE_SSL
+        value: "false"
+      - key: MAIL_USERNAME
         sync: false
-      - key: MAILJET_SECRET_KEY
+      - key: MAIL_PASSWORD
         sync: false
-      - key: CONTACT_FROM
+      - key: MAIL_DEFAULT_SENDER
         sync: false
       - key: CONTACT_TO
         sync: false

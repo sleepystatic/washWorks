@@ -222,50 +222,71 @@ def persist(record):
         fh.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def notify(record):
-    """Send the enquiry on. Returns True if it was delivered.
+def _bool_env(name, default=False):
+    return os.getenv(name, str(default)).strip().lower() in ("1", "true", "yes", "on")
 
-    T-4: send from an address on washworkscws.com once C-7 confirms which one,
-    and add the provider to the existing SPF record rather than creating a
-    second one. Reply-To is the submitter so replies work from the inbox.
-    """
-    api_key = os.getenv("MAILJET_API_KEY")
-    secret = os.getenv("MAILJET_SECRET_KEY")
+
+def build_message(record):
+    """Build the notification email from a saved submission record."""
+    from email.message import EmailMessage
+
+    fields = record["fields"]
+    sender = os.getenv("MAIL_DEFAULT_SENDER") or os.getenv("CONTACT_FROM")
     to_address = os.getenv("CONTACT_TO") or CONTENT["company"].get("email")
-    from_address = os.getenv("CONTACT_FROM")
 
-    if not all([api_key, secret, to_address, from_address]):
-        log.warning("notify skipped - mail not configured (blocked on C-7/T-4)")
+    body = "\n".join(f"{k.replace('_', ' ').title()}: {v}"
+                     for k, v in fields.items() if v)
+    body += f"\n\nReference: {record['id']}\nReceived: {record['received_at']}"
+
+    msg = EmailMessage()
+    msg["Subject"] = f"Website enquiry - {fields.get('subject') or 'General'}"
+    msg["From"] = sender
+    msg["To"] = to_address
+    # T-4: replies go straight back to the person who filled the form.
+    msg["Reply-To"] = fields["email"]
+    msg.set_content(body)
+    return msg, sender, to_address
+
+
+def notify(record):
+    """Send the enquiry on over SMTP. Returns True if the server accepted it.
+
+    Provider-agnostic SMTP - Mailgun by default (see .env.example for exactly
+    which value goes where). The email is only a notification: persist() has
+    already saved the record (T-5), so a send failure here costs a heads-up in
+    the log, never the lead itself.
+
+    T-4: send FROM an address on your verified sending domain (the Mailgun
+    domain), with SPF + DKIM in place, or the mail lands in spam.
+    """
+    import smtplib
+
+    server = os.getenv("MAIL_SERVER")
+    username = os.getenv("MAIL_USERNAME")
+    password = os.getenv("MAIL_PASSWORD")
+    port = int(os.getenv("MAIL_PORT", "587"))
+    use_ssl = _bool_env("MAIL_USE_SSL", False)
+    use_tls = _bool_env("MAIL_USE_TLS", True)
+
+    msg, sender, to_address = build_message(record)
+
+    if not all([server, username, password, sender, to_address]):
+        log.warning("notify skipped - SMTP not fully configured "
+                    "(see .env.example; still blocked on C-7 email / T-4 setup)")
         return False
 
     try:
-        from mailjet_rest import Client
-    except ImportError:
-        log.error("notify failed - mailjet_rest not installed")
-        return False
-
-    lines = "".join(
-        f"<p style='margin:4px 0'><strong>{k.replace('_', ' ').title()}:</strong> {v}</p>"
-        for k, v in record["fields"].items() if v
-    )
-    payload = {"Messages": [{
-        "From": {"Email": from_address, "Name": "Wash Works Website"},
-        "To": [{"Email": to_address}],
-        "ReplyTo": {"Email": record["fields"]["email"]},
-        "Subject": f"Website enquiry - {record['fields'].get('subject') or 'General'}",
-        "HTMLPart": f"<div style='font-family:sans-serif'>{lines}"
-                    f"<p style='color:#666;font-size:12px'>Reference {record['id']}</p></div>",
-    }]}
-
-    try:
-        result = Client(auth=(api_key, secret), version="v3.1").send.create(data=payload)
+        smtp = (smtplib.SMTP_SSL(server, port, timeout=15) if use_ssl
+                else smtplib.SMTP(server, port, timeout=15))
+        with smtp:
+            smtp.ehlo()
+            if use_tls and not use_ssl:
+                smtp.starttls()
+                smtp.ehlo()
+            smtp.login(username, password)
+            smtp.send_message(msg)
     except Exception:
-        log.exception("notify failed - transport error, reference %s", record["id"])
-        return False
-
-    if result.status_code != 200:
-        log.error("notify failed - mailjet returned %s, reference %s",
-                  result.status_code, record["id"])
+        log.exception("notify failed - SMTP error, reference %s", record["id"])
         return False
     return True
 
@@ -315,7 +336,9 @@ def contact_submit():
                                    f"{CONTENT['company']['phone_display']} instead."}), 500
 
     delivered = notify(record)
-    if not delivered:
+    if delivered:
+        log.info("submission %s emailed to %s", record["id"], os.getenv("CONTACT_TO"))
+    else:
         log.warning("submission %s saved but not emailed", record["id"])
 
     return jsonify({"status": "success",
