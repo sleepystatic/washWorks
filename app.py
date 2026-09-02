@@ -248,13 +248,70 @@ def build_message(record):
     return msg, sender, to_address
 
 
-def notify(record):
-    """Send the enquiry on over SMTP. Returns True if the server accepted it.
+def notify_via_mailgun_api(record):
+    """Send through Mailgun's HTTP API. Returns True/False, or None if unconfigured.
 
-    Provider-agnostic SMTP - Mailgun by default (see .env.example for exactly
-    which value goes where). The email is only a notification: persist() has
-    already saved the record (T-5), so a send failure here costs a heads-up in
-    the log, never the lead itself.
+    This exists because Render's FREE web services block all outbound SMTP ports
+    - 25, 465 AND 587 - at the network level (confirmed against Render's own
+    changelog, 2026-09). smtplib.connect() just hangs and times out; no
+    credential or code change on our side fixes that, because the connection
+    never leaves the box. The HTTP API sidesteps it entirely: it's a plain
+    HTTPS POST on port 443, which no PaaS blocks on any plan, because blocking
+    443 would break the platform itself.
+
+    Uses urllib (stdlib) rather than the requests library or Mailgun's SDK, to
+    keep this dependency-free - same reasoning as dropping mailjet-rest earlier.
+    """
+    import base64
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+
+    api_key = os.getenv("MAILGUN_API_KEY")
+    domain = os.getenv("MAILGUN_DOMAIN")
+    base_url = os.getenv("MAILGUN_API_BASE", "https://api.mailgun.net/v3")
+
+    if not all([api_key, domain]):
+        return None  # not configured - caller falls back to SMTP
+
+    msg, sender, to_address = build_message(record)
+    if not all([sender, to_address]):
+        log.warning("notify skipped - CONTACT_TO/MAIL_DEFAULT_SENDER not set "
+                    "(still blocked on C-7 email)")
+        return False
+
+    data = urllib.parse.urlencode({
+        "from": sender,
+        "to": to_address,
+        "h:Reply-To": msg["Reply-To"],
+        "subject": msg["Subject"],
+        "text": msg.get_content(),
+    }).encode()
+
+    req = urllib.request.Request(f"{base_url}/{domain}/messages", data=data, method="POST")
+    req.add_header("Authorization",
+                   "Basic " + base64.b64encode(f"api:{api_key}".encode()).decode())
+
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return 200 <= resp.status < 300
+    except urllib.error.HTTPError as e:
+        detail = e.read(300).decode("utf-8", "replace")
+        log.error("notify failed - Mailgun API HTTP %s, reference %s: %s",
+                  e.code, record["id"], detail)
+        return False
+    except Exception:
+        log.exception("notify failed - Mailgun API transport error, reference %s",
+                      record["id"])
+        return False
+
+
+def notify_via_smtp(record):
+    """Send the enquiry on over SMTP. Returns True/False, or None if unconfigured.
+
+    Provider-agnostic - works with Mailgun or any other SMTP host (see
+    .env.example). Kept as a fallback: it works fine from a paid Render
+    instance, or any host that doesn't block SMTP ports outbound.
 
     T-4: send FROM an address on your verified sending domain (the Mailgun
     domain), with SPF + DKIM in place, or the mail lands in spam.
@@ -271,9 +328,7 @@ def notify(record):
     msg, sender, to_address = build_message(record)
 
     if not all([server, username, password, sender, to_address]):
-        log.warning("notify skipped - SMTP not fully configured "
-                    "(see .env.example; still blocked on C-7 email / T-4 setup)")
-        return False
+        return None  # not configured - caller has already tried the API path
 
     try:
         smtp = (smtplib.SMTP_SSL(server, port, timeout=15) if use_ssl
@@ -289,6 +344,27 @@ def notify(record):
         log.exception("notify failed - SMTP error, reference %s", record["id"])
         return False
     return True
+
+
+def notify(record):
+    """Send the enquiry on. Returns True if delivered, False otherwise.
+
+    Tries Mailgun's HTTP API first (works on Render's free tier), then falls
+    back to SMTP (works everywhere else). persist() has already saved the
+    record (T-5), so either path failing costs a heads-up in the log, never
+    the lead itself.
+    """
+    result = notify_via_mailgun_api(record)
+    if result is not None:
+        return result
+
+    result = notify_via_smtp(record)
+    if result is not None:
+        return result
+
+    log.warning("notify skipped - no mail transport configured "
+                "(see .env.example; still blocked on C-7 email / T-4 setup)")
+    return False
 
 
 @app.route("/contact/submit", methods=["POST"])

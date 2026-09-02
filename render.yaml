@@ -14,7 +14,17 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true
-      # SMTP (Mailgun) — set the secret values in the dashboard, never in git.
+      # Mailgun HTTP API — the mail path notify() tries FIRST. Plain HTTPS on
+      # port 443, so it works regardless of plan (unlike SMTP below, which
+      # free web services cannot use at all - see the .env.example note).
+      - key: MAILGUN_API_KEY
+        sync: false
+      - key: MAILGUN_DOMAIN
+        value: mg.washworkscws.com
+      - key: MAILGUN_API_BASE
+        value: https://api.mailgun.net/v3
+      # SMTP (Mailgun) — fallback path. Requires this service to be on a paid
+      # plan; Render blocks outbound ports 25/465/587 on free web services.
       - key: MAIL_SERVER
         value: smtp.mailgun.org
       - key: MAIL_PORT
@@ -27,6 +37,7 @@ services:
         sync: false
       - key: MAIL_PASSWORD
         sync: false
+      # Shared by both mail paths.
       - key: MAIL_DEFAULT_SENDER
         sync: false
       - key: CONTACT_TO
