@@ -1,5 +1,5 @@
-# Email notifications go over SMTP via the standard library (smtplib), so there
-# is no mail-provider SDK to pin here. Swapping SMTP providers is a .env change.
+# Contact-form email goes through Resend's HTTP API, called with urllib from
+# the standard library - no mail SDK to pin or keep updated.
 Flask==3.0.3
 gunicorn==22.0.0
 python-dotenv==1.0.1
