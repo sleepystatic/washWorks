@@ -275,6 +275,10 @@ def notify(record):
     req = urllib.request.Request("https://api.resend.com/emails", data=payload, method="POST")
     req.add_header("Authorization", f"Bearer {api_key}")
     req.add_header("Content-Type", "application/json")
+    # api.resend.com sits behind Cloudflare, whose Browser Integrity Check
+    # 403s the default "Python-urllib/x.y" User-Agent (Cloudflare error 1010).
+    # Any non-library identifier gets through.
+    req.add_header("User-Agent", "WashWorksWebsite/1.0 (+https://washworkscws.com)")
 
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:

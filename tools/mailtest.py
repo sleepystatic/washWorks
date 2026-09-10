@@ -72,6 +72,9 @@ payload = json.dumps({
 req = urllib.request.Request("https://api.resend.com/emails", data=payload, method="POST")
 req.add_header("Authorization", f"Bearer {api_key}")
 req.add_header("Content-Type", "application/json")
+# Match app.py: Cloudflare in front of api.resend.com 403s the default
+# "Python-urllib" User-Agent (Cloudflare error 1010).
+req.add_header("User-Agent", "WashWorksWebsite/1.0 (+https://washworkscws.com)")
 
 print(f"-> POST https://api.resend.com/emails  (to: {recipient})")
 try:
@@ -80,13 +83,17 @@ try:
     print(f"  [OK] {resp.status} - {body}")
 except urllib.error.HTTPError as e:
     detail = e.read(600).decode("utf-8", "replace")
-    if e.code in (401, 403):
-        print(f"  [x] AUTH rejected ({e.code}). RESEND_API_KEY is wrong or revoked.")
-        print("      Resend dashboard -> API Keys -> create a fresh one.")
-    elif e.code in (403, 422) and "domain" in detail.lower():
+    if "1010" in detail:
+        print(f"  [x] Cloudflare blocked the request ({e.code}, error 1010) - the")
+        print("      User-Agent header is missing or being stripped. This should")
+        print("      not happen with the header app.py/mailtest.py now set.")
+    elif "domain" in detail.lower() and e.code in (403, 422):
         print(f"  [x] rejected ({e.code}) - the 'from' domain is not verified in Resend:")
         print(f"      {detail}")
         print("      Resend dashboard -> Domains -> add the DNS records, wait for green.")
+    elif e.code in (401, 403):
+        print(f"  [x] AUTH rejected ({e.code}). RESEND_API_KEY is wrong or revoked.")
+        print("      Resend dashboard -> API Keys -> create a fresh one.")
     else:
         print(f"  [x] HTTP {e.code}: {detail}")
     sys.exit(1)
