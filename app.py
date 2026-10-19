@@ -76,6 +76,52 @@ def prune(value):
     return value
 
 
+HERO_VIDEO_WARN_MB = 15
+
+
+def hero_video_files():
+    """Find the self-hosted hero loop on disk. Paths are relative to static/.
+
+    Dropping hero.mp4 into static/video/ is the whole setup, and deleting it puts
+    the plain navy hero back - nothing to configure. If the file was not renamed
+    to hero.mp4, the only .mp4 in static/video/ is used. A same-named .webm and
+    <name>-poster.jpg next to it are picked up automatically.
+    Overrides and the on/off switch live in content/site.json home.hero_video.
+    Returns {"mp4", "webm", "poster"} (webm/poster may be None), or None.
+    """
+    cfg = CONTENT.get("home", {}).get("hero_video") or {}
+    if cfg.get("enabled") is False:
+        return None
+    static = app.static_folder
+
+    def found(rel):
+        return rel if rel and os.path.isfile(os.path.join(static, rel)) else None
+
+    mp4 = found(cfg.get("src") or "video/hero.mp4")
+    if not mp4:
+        folder = os.path.join(static, "video")
+        only = ([f for f in os.listdir(folder) if f.lower().endswith(".mp4")]
+                if os.path.isdir(folder) else [])
+        mp4 = f"video/{only[0]}" if len(only) == 1 else None
+    if not mp4:
+        return None
+
+    stem = os.path.splitext(mp4)[0]
+    return {
+        "mp4": mp4,
+        "webm": found(cfg.get("webm") or f"{stem}.webm"),
+        "poster": found(cfg.get("poster") or f"{stem}-poster.jpg"),
+    }
+
+
+def hero_video():
+    """hero_video_files() as URLs, for the home page template."""
+    files = hero_video_files()
+    if not files:
+        return None
+    return {k: (url_for("static", filename=v) if v else None) for k, v in files.items()}
+
+
 def local_business_schema():
     """S-4: LocalBusiness markup. Only asserts what the client has confirmed."""
     company = CONTENT["company"]
@@ -112,6 +158,7 @@ def inject_content():
         "canonical_url": request.base_url.replace("http://", "https://", 1),
         "business_schema": local_business_schema(),
         "current_year": datetime.now(timezone.utc).year,
+        "hero_video": hero_video() if request.endpoint == "index" else None,
     }
 
 
@@ -426,7 +473,26 @@ def report_blockers():
                     "the indexed launch, or run staging with NOINDEX=1.")
 
 
+def report_hero_video():
+    """Say what the home page hero will do, and flag a file that is too heavy."""
+    files = hero_video_files()
+    if not files:
+        log.info("hero video: none found in static/video/ - home page shows the plain navy hero "
+                 "(drop hero.mp4 there, or see content/site.json home.hero_video)")
+        return
+    path = os.path.join(app.static_folder, files["mp4"])
+    mb = os.path.getsize(path) / 1048576
+    extras = ", ".join(k for k in ("webm", "poster") if files[k]) or "no poster"
+    if mb > HERO_VIDEO_WARN_MB:
+        log.warning("hero video %s is %.0f MB - far too heavy for a hero loop and it will slow "
+                    "the home page. Shrink it: python tools/make_hero_video.py <source file>",
+                    files["mp4"], mb)
+    else:
+        log.info("hero video: %s (%.1f MB, %s)", files["mp4"], mb, extras)
+
+
 report_blockers()
+report_hero_video()
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

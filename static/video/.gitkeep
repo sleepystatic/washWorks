@@ -1,0 +1,3 @@
+# Home page hero loop goes here: hero.mp4 (+ optional hero-poster.jpg, hero.webm).
+# Drop the files in and the home page picks them up automatically.
+# Make them from any clip with:  python tools/make_hero_video.py <your video file>

@@ -16,6 +16,74 @@
     });
   });
 
+  // --- hero background video (self-hosted) -------------------------------------
+  // static/video/hero.mp4 - see tools/make_hero_video.py. The <video> ships with
+  // preload="none" and no autoplay attribute, so nothing downloads until this
+  // decides motion is welcome. Visitors who prefer reduced motion, or have Data
+  // Saver / a 2G connection, just get the poster frame and a play button they
+  // can press themselves. Everyone else gets a pause button too (WCAG 2.2.2:
+  // auto-moving content past 5s needs a way to stop it).
+  var heroVideo = document.querySelector(".hero__video");
+  if (heroVideo) {
+    var heroToggle = document.querySelector("[data-video-toggle]");
+    var heroSection = heroVideo.closest(".hero");
+    var heroConn = navigator.connection || {};
+    var heroMotionWelcome = !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+                            !heroConn.saveData && !/(^|-)2g$/.test(heroConn.effectiveType || "");
+    var heroUserPaused = !heroMotionWelcome;   // an opt-out counts as "paused" until they press play
+    var heroInView = true;
+
+    var heroShowState = function () {
+      if (!heroToggle) return;
+      heroToggle.hidden = false;
+      heroToggle.setAttribute("aria-pressed", String(heroVideo.paused));
+      heroToggle.setAttribute("aria-label",
+        heroVideo.paused ? "Play background video" : "Pause background video");
+    };
+    var heroPlay = function () {
+      if (heroUserPaused || !heroInView) return;
+      heroVideo.muted = true;   // muted playback is what browsers allow without a click
+      var started = heroVideo.play();
+      // Autoplay blocked (iOS Low Power Mode, an extension...): leave the poster
+      // up and let the visitor start it with the button.
+      if (started && started.catch) started.catch(heroShowState);
+    };
+    var heroGiveUp = function () {
+      heroVideo.hidden = true;
+      if (heroToggle) heroToggle.hidden = true;
+      console.warn("[hero video] could not load - showing the plain hero instead");
+    };
+
+    heroVideo.addEventListener("play", heroShowState);
+    heroVideo.addEventListener("pause", heroShowState);
+    heroVideo.addEventListener("error", heroGiveUp);
+    var heroSources = heroVideo.querySelectorAll("source");
+    if (heroSources.length) heroSources[heroSources.length - 1].addEventListener("error", heroGiveUp);
+
+    if (heroToggle) {
+      heroToggle.addEventListener("click", function () {
+        if (heroVideo.paused) { heroUserPaused = false; heroPlay(); }
+        else { heroUserPaused = true; heroVideo.pause(); }
+      });
+    }
+    if (!heroMotionWelcome) heroShowState();   // so the play button is there to opt in
+
+    // Play while the tab is visible and the hero is on screen; rest otherwise.
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") heroPlay(); else heroVideo.pause();
+    });
+    if ("IntersectionObserver" in window && heroSection) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          heroInView = e.isIntersecting;
+          if (heroInView) heroPlay(); else heroVideo.pause();
+        });
+      }, { threshold: 0.05 }).observe(heroSection);
+    } else {
+      heroPlay();
+    }
+  }
+
   // --- mobile nav ----------------------------------------------------------
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("primary-nav");

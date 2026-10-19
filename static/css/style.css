@@ -255,6 +255,50 @@ a:hover { color: var(--navy-700); }
 .hero__phone:hover .number { color: var(--accent); }
 
 /* ==========================================================================
+   hero background video
+
+   Self-hosted <video> (static/video/hero.mp4 - see tools/make_hero_video.py).
+   object-fit: cover fills the hero at any screen shape, cropping the footage
+   instead of letterboxing it.
+   ========================================================================== */
+
+.hero--video { position: relative; overflow: hidden; }
+.hero__media {
+  position: absolute; inset: 0;
+  background-color: var(--navy-800);      /* shows instantly, before the poster or video paints */
+}
+.hero__video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  pointer-events: none;                   /* decorative; never steals clicks from the hero content */
+}
+.hero__media::after {
+  /* Scrim over arbitrary footage: keeps hero text legible at AA contrast
+     regardless of what's in the shot, and keeps the brand navy present. */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0, 28, 64, .55), rgba(0, 28, 64, .78));
+}
+.hero--video .container { position: relative; z-index: 1; }
+
+.hero__video-toggle {
+  position: absolute; right: var(--s-6); bottom: var(--s-6); z-index: 2;
+  width: 2.75rem; height: 2.75rem;        /* 44px touch target - L-3 */
+  display: inline-flex; align-items: center; justify-content: center; gap: 3px;
+  border-radius: 50%; border: 1px solid rgba(255, 255, 255, .4);
+  background: rgba(0, 28, 64, .55); color: var(--paper); cursor: pointer;
+}
+.hero__video-toggle:hover { background: rgba(0, 28, 64, .82); }
+.hero__video-toggle .bar { display: block; width: 3px; height: 12px; background: currentColor; border-radius: 1px; }
+.hero__video-toggle .tri {
+  display: none; width: 0; height: 0; margin-left: 2px;
+  border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+  border-left: 10px solid currentColor;
+}
+.hero__video-toggle[aria-pressed="true"] .bar { display: none; }
+.hero__video-toggle[aria-pressed="true"] .tri { display: block; }
+
+/* ==========================================================================
    trust bar - credentials strip
    ========================================================================== */
 

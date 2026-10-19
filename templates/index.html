@@ -2,7 +2,28 @@
 
 {% block content %}
 
-<section class="hero">
+<section class="hero{% if hero_video %} hero--video{% endif %}">
+  {% if hero_video %}
+    {# Self-hosted loop from static/video/ (see app.py hero_video_files()).
+       preload="none" and no autoplay attribute on purpose: main.js starts it
+       only when motion is welcome, so visitors with reduced-motion or Data
+       Saver on never download the file - they get the poster frame and a play
+       button. Without JS it is simply the poster. #}
+    <div class="hero__media" aria-hidden="true">
+      <video class="hero__video" muted loop playsinline preload="none" tabindex="-1"
+             {% if hero_video.poster %}poster="{{ hero_video.poster }}"{% endif %}>
+        {% if hero_video.webm %}<source src="{{ hero_video.webm }}" type="video/webm">{% endif %}
+        <source src="{{ hero_video.mp4 }}" type="video/mp4">
+      </video>
+    </div>
+    {# WCAG 2.2.2: auto-moving content past 5s needs a way to pause it.
+       Starts hidden; main.js reveals it once it knows the video's state. #}
+    <button type="button" class="hero__video-toggle" data-video-toggle
+            aria-label="Pause background video" aria-pressed="false" hidden>
+      <span class="bar" aria-hidden="true"></span><span class="bar" aria-hidden="true"></span>
+      <span class="tri" aria-hidden="true"></span>
+    </button>
+  {% endif %}
   <div class="container">
     <p class="eyebrow">Car wash service &amp; equipment &middot; {{ company.address.city }}, {{ company.address.region }}</p>
     <h1>Your wash, running and earning.</h1>

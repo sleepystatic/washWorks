@@ -43,6 +43,12 @@ data/*.sqlite3
 Thumbs.db
 desktop.ini
 
+# --- Raw footage -----------------------------------------------------------
+# Source clips for the hero video are far too big for git (GitHub rejects files
+# over 100 MB). Keep them here, run tools/make_hero_video.py on them, and only
+# the small result in static/video/ gets committed.
+brand-source/video/
+
 # --- Logs ------------------------------------------------------------------
 *.log
 logs/

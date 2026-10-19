@@ -46,6 +46,16 @@
     "_note": "T-7: paste the GA4 Measurement ID (G-XXXXXXXXXX) here to switch on analytics. When set, the site loads gtag and fires a 'phone_call' event on every tel: click and a 'generate_lead' event on a successful contact submit - mark those two as conversions in GA4. Left off until you create the property."
   },
 
+  "home": {
+    "hero_video": {
+      "enabled": true,
+      "src": "video/hero.mp4",
+      "webm": null,
+      "poster": null,
+      "_note": "Self-hosted loop behind the homepage hero. NOTHING TO CONFIGURE: drop hero.mp4 into static/video/ and it appears; delete it and the plain navy hero comes back. A hero.webm and hero-poster.jpg next to it are picked up automatically (the poster shows while the video loads, and to visitors who prefer reduced motion or have Data Saver on - they get a play button instead of autoplay). Easiest way to make all of them from any clip: python tools/make_hero_video.py <your video file>. Keep hero.mp4 under ~8 MB: 10-20 seconds, no audio. 'enabled': false hides it without deleting the files. 'src', 'webm' and 'poster' are optional overrides - paths relative to static/ - for different filenames."
+    }
+  },
+
   "promo": {
     "active": false,
     "headline": null,
