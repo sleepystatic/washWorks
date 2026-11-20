@@ -47,7 +47,7 @@
 
     <div class="site-footer__legal">
       <span>
-        &copy; {{ current_year }} {{ company.name }}.
+        &copy; {{ current_year }} {{ company.name }}{% if not company.name.endswith('.') %}.{% endif %}
         {% set creds = [] %}
         {% if company.licensed %}{% set _ = creds.append("CSLB Lic. #" ~ company.license_number if company.license_number else "Licensed") %}{% endif %}
         {% if company.bonded %}{% set _ = creds.append("Bonded") %}{% endif %}
@@ -57,6 +57,8 @@
       </span>
       <span>
         <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+        <span aria-hidden="true">&middot;</span>
+        Made by <a href="https://staticdesigns.dev/" target="_blank" rel="noopener">Static Designs<span class="visually-hidden"> (opens in a new tab)</span></a>
       </span>
     </div>
 
