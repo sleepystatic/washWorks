@@ -1,0 +1,32 @@
+{
+  // Wash Works on Cloudflare: a static copy of the site (dist/, built from the Flask app
+  // by tools/build_static.py) served by Cloudflare, plus worker/index.js for the contact form.
+  //
+  //   Build + deploy:   python tools/build_static.py   then   npx wrangler deploy
+  //   Local preview:    python tools/build_static.py --noindex   then   npx wrangler dev
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wash-works",
+  "main": "worker/index.js",
+  "compatibility_date": "2025-09-01",
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // Only these paths run the Worker (free plan: 100,000 Worker requests/day).
+    // Every other request is plain static hosting: free and unlimited.
+    "run_worker_first": ["/contact/submit", "/static/video/*"]
+  },
+
+  // Contact form submissions are saved here BEFORE the email is attempted (T-5).
+  // Wrangler creates the namespace on the first deploy. Read them back with:
+  //   npx wrangler kv key list --binding SUBMISSIONS --remote
+  "kv_namespaces": [{ "binding": "SUBMISSIONS" }],
+
+  "observability": { "enabled": true },
+
+  // Text variables (MAIL_DEFAULT_SENDER, CONTACT_TO) and the RESEND_API_KEY secret are set in
+  // the Cloudflare dashboard: Worker > Settings > Variables and Secrets. This stops a deploy
+  // from wiping them.
+  "keep_vars": true
+}

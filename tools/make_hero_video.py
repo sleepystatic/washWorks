@@ -143,7 +143,7 @@ def main():
     print("Making hero-poster.jpg ...")
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-ss", str(args.poster_at), "-i", mp4,
          "-frames:v", "1", "-update", "1",
-         "-vf", f"scale='min({min(args.width, 1600)},iw)':-2", "-q:v", "4", poster], "hero-poster.jpg")
+         "-vf", f"scale='min({min(args.width, 1600)},iw)':-2", "-q:v", "7", poster], "hero-poster.jpg")
 
     if args.webm:
         print("Encoding hero.webm (VP9 - this one takes a while) ...")

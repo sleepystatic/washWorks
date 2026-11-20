@@ -1,0 +1,13 @@
+{
+  "name": "wash-works",
+  "private": true,
+  "description": "Wash Works Inc. - Flask source, deployed to Cloudflare as a static build plus one Worker.",
+  "scripts": {
+    "build": "python tools/build_static.py",
+    "dev": "python tools/build_static.py --noindex && wrangler dev",
+    "deploy": "python tools/build_static.py && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
